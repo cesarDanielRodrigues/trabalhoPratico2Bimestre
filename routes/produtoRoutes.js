@@ -39,7 +39,7 @@ router.post("/", (req, res) => {
 
 router.get("/",(req,res)=>{
   try{
-    const produtos = Produto
+    const produtos = Produto.getMaxListeners()
     console.log(produtos)
     res.status(200).json(produtos)
   } catch(error){
