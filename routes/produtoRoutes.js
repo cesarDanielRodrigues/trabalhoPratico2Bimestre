@@ -2,7 +2,7 @@ const router = require("express").Router()
 const Produto = require("../models/Produto")
 
 //CREATE
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { id, nome, descricao, cor, peso, tipo, preco, data_cadastro } =
     req.body
   if (
@@ -18,6 +18,26 @@ router.post("/", (req, res) => {
     res.status(422).json({
       error: "Informe os campos corretamente",
     })
+  }
+  if (
+    !nome ||
+    !descricao ||
+    !cor ||
+    !peso ||
+    !tipo ||
+    !preco ||
+    !data_cadastro
+  ) {
+    return res.status(422).json({
+      error:
+        "Todos os campos (nome, descricao, cor, peso, tipo, preco, data_cadastro) são obrigatórios!",
+    })
+  }
+  const existingProduct = await Produto.findOne({ id });
+  if (existingProduct) {
+    return res.status(409).json({
+      error: "ID já existe no banco de dados. Escolha um ID diferente.",
+    });
   }
   const produto = {
     id,
@@ -35,6 +55,7 @@ router.post("/", (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error })
   }
+
 })
 
 //READ
