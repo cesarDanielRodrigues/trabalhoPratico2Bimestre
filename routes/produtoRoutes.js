@@ -2,6 +2,7 @@ const router = require("express").Router()
 
 const Produto = require("../models/Produto")
 
+//CREATE
 router.post("/", (req, res) => {
   const { id, nome, descricao, cor, peso, tipo, preco, data_cadastro } =
     req.body
@@ -16,7 +17,7 @@ router.post("/", (req, res) => {
     !data_cadastro
   ) {
     res.status(422).json({
-      error: "Informar o nome, cargo, salario e desligao é obrigatório!",
+      error: "Informe os campos corretamente",
     })
   }
   const produto = {
@@ -37,14 +38,48 @@ router.post("/", (req, res) => {
   }
 })
 
-router.get("/",(req,res)=>{
+//READ
+router.get("/", async (req,res)=>{
   try{
-    const produtos = Produto.getMaxListeners()
-    console.log(produtos)
-    res.status(200).json(produtos)
+    const produtos = await Produto.find()
+    res.status(201).json(produtos)
   } catch(error){
     res.status(500).json({error:error})
   }
 })
 
+//READ com ID
+router.get("/:index", async(req,res)=>{
+  try{
+    const {index} = req.params
+    const produto = await Produto.findOne({id:index})
+    res.status(201).json(produto)
+  }catch(error){
+    res.status(500).json({error:error})
+    
+  }
+})
+
+//UPDATE
+router.put("/:index", async(req,res)=>{
+  try{
+    const {index} = req.params
+    const { nome, descricao, cor, peso, tipo, preco, data_cadastro } = req.body
+    const produto = {
+      nome,
+      descricao,
+      cor,
+      peso,
+      tipo,
+      preco,
+      data_cadastro
+    }
+    await Produto.updateOne({id:index},produto)
+    res.status(201).json({message:"Produto atualizado com sucesso!"})
+  }catch(error){
+    res.status(500).json({error:error})
+  }
+})
+
+//
 module.exports = router
