@@ -33,11 +33,11 @@ router.post("/", async (req, res) => {
         "Todos os campos (nome, descricao, cor, peso, tipo, preco, data_cadastro) são obrigatórios!",
     })
   }
-  const existingProduct = await Produto.findOne({ id });
+  const existingProduct = await Produto.findOne({ id })
   if (existingProduct) {
     return res.status(409).json({
       error: "ID já existe no banco de dados. Escolha um ID diferente.",
-    });
+    })
   }
   const produto = {
     id,
@@ -55,7 +55,6 @@ router.post("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error })
   }
-
 })
 
 //READ
@@ -68,16 +67,22 @@ router.get("/", async (req, res) => {
   }
 })
 
-//READ com ID
+//READ com ID ou NOME
 router.get("/:index", async (req, res) => {
   try {
     const { index } = req.params
-    const produto = await Produto.findOne({ id: index })
+    let produto;
 
-    if (!produto) {
-      return res.status(404).json({ message: "Produto não encontrado" })
+    if (!isNaN(index)) {
+      produto = await Produto.findOne({ id: index });
     }
 
+    if (!produto) {
+      produto = await Produto.findOne({ nome: index });
+    }
+    if(!produto){
+      return res.status(404).json({ message: "Produto não encontrado" })
+    }
     res.status(201).json(produto)
   } catch (error) {
     res.status(500).json({ error: error })
