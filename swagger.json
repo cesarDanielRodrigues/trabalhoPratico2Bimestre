@@ -7,8 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://trabalhopratico2bimestre.onrender.com/produto",
-      "description": "Servidor Local"
+      "url": "https://trabalhopratico2bimestre.onrender.com/produto"
     }
   ],
   "paths": {
