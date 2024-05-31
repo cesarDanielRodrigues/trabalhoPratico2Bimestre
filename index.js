@@ -1,9 +1,11 @@
+const swaggerUi = require("swagger-ui-express")
 const express = require("express")
 const mongoose = require("mongoose")
 const server = express()
-
-
 const produtoRoutes = require('./routes/produtoRoutes')
+const swaggerDocs = require("./swagger.json")
+
+server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 //Middleware
 server.use(

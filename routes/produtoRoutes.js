@@ -2,7 +2,7 @@ const router = require("express").Router()
 const Produto = require("../models/Produto")
 
 //CREATE
-router.post("/", async (req, res) => {
+router.post("/criarProduto", async (req, res) => {
   const { id, nome, descricao, cor, peso, tipo, preco, data_cadastro } =
     req.body
   if (
@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
     typeof preco !== "number" ||
     isNaN(new Date(data_cadastro).getTime())
   ) {
-    res.status(422).json({
+    res.status(420).json({
       error: "Informe os campos corretamente",
     })
   }
@@ -28,14 +28,14 @@ router.post("/", async (req, res) => {
     !preco ||
     !data_cadastro
   ) {
-    return res.status(422).json({
+    return res.status(421).json({
       error:
         "Todos os campos (nome, descricao, cor, peso, tipo, preco, data_cadastro) são obrigatórios!",
     })
   }
   const existingProduct = await Produto.findOne({ id })
   if (existingProduct) {
-    return res.status(409).json({
+    return res.status(422).json({
       error: "ID já existe no banco de dados. Escolha um ID diferente.",
     })
   }
@@ -90,7 +90,7 @@ router.get("/:index", async (req, res) => {
 })
 
 //UPDATE
-router.put("/:index", async (req, res) => {
+router.put("/atualizarProduto/:index", async (req, res) => {
   try {
     const { index } = req.params
     const { nome, descricao, cor, peso, tipo, preco, data_cadastro } = req.body
@@ -109,7 +109,7 @@ router.put("/:index", async (req, res) => {
       !preco ||
       !data_cadastro
     ) {
-      return res.status(422).json({
+      return res.status(421).json({
         error:
           "Todos os campos (nome, descricao, cor, peso, tipo, preco, data_cadastro) são obrigatórios!",
       })
@@ -124,7 +124,7 @@ router.put("/:index", async (req, res) => {
       typeof preco !== "number" ||
       isNaN(new Date(data_cadastro).getTime())
     ) {
-      return res.status(422).json({
+      return res.status(420).json({
         error:
           "Verifique os tipos dos campos (nome: string, descricao: string, cor: string, peso: number, tipo: string, preco: number, data_cadastro: date).",
       })
@@ -140,14 +140,14 @@ router.put("/:index", async (req, res) => {
       data_cadastro,
     }
     await Produto.updateOne({ id: index }, produto)
-    res.status(201).json({ message: "Produto atualizado com sucesso!" })
+    res.status(201).json(produto)
   } catch (error) {
     res.status(500).json({ error: error })
   }
 })
 
 //DELETE
-router.delete("/:index", async (req, res) => {
+router.delete("/deletarProduto/:index", async (req, res) => {
   try {
     const { index } = req.params
     const existingProduct = await Produto.findOne({ id: index })

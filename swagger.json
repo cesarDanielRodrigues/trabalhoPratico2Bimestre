@@ -1,0 +1,269 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Produtos",
+    "description": "API de Produtos",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/produto",
+      "description": "Servidor Local"
+    }
+  ],
+  "paths": {
+    "/":{
+      "get":{
+        "summary": "Listar todos as informações de todos os produtos",
+        "description": "Essa rota lista todos as informações de todos os produtos",
+        "tags": ["Produto"],
+        "responses":{
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Produto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          }
+        }
+      }
+    },
+    "/{idOrName}":{
+      "get":{
+        "summary": "Listar todas as informações de um determinado produto usando seu ID ou Nome",
+        "description": "Essa rota lista todas as informações de um determinado produto usando seu ID ou Nome",
+        "tags": ["Produto"],
+        "parameters": [
+          {
+            "name": "idOrName",
+            "in": "path",
+            "required": true,
+            "description": "ID/Nome do produto"
+          }
+        ],
+        "responses":{
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+
+                "schema": {
+                  "type": "array",
+                  "items":{
+                    "$ref": "#/components/schemas/Produto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          }
+        }
+      }
+    },
+    "/criarProduto": {
+      "post": {
+        "summary": "Cadastrar um novo produto no mongoDB",
+        "description": "Essa rota lista todos as informações de todos os produtos",
+        "tags": ["Produto"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Produto"
+              },
+              "examples": {
+                "Produto": {
+                  "value": {
+                    "id": 1,
+                    "nome": "Produto 1",
+                    "descricao": "Descrição do produto 1",
+                    "cor": "Azul",
+                    "peso": 1.5,
+                    "tipo": "Eletrônico",
+                    "preco": 1500.0,
+                    "data_cadastro": "2021-09-01"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "420": {
+            "description": "Um ou mais campos com informações inválidas"
+          },
+          "421": {
+            "description": "Um ou mais campos obrigatórios não foram preenchidos"
+          },
+          "422": {
+            "description": "Produto já cadastrado"
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Produto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          }
+        }
+      }
+    },
+    "/atualizarProduto/{id}":{
+      "put":{
+        "summary":"Atualizar um produto existente no mongoDB",
+        "description":"Essa rota atualiza um produto existente no mongoDB",
+        "tags":["Produto"],
+        "parameters":[
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do produto",
+            "required": true,
+            "schema":{
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody":{
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Produto"
+              },
+              "examples": {
+                "Produto": {
+                  "value": {
+                    "nome": "Produto 1",
+                    "descricao": "Descrição do produto 1",
+                    "cor": "Azul",
+                    "peso": 1.5,
+                    "tipo": "Eletrônico",
+                    "preco": 1500.0,
+                    "data_cadastro": "2021-09-01"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses":{
+          "404":{
+            "description":"Produto não encontrado"
+          },
+          "421":{
+            "description":"Um ou mais campos obrigatórios não foram preenchidos"
+          },
+          "420":{
+            "description":"Um ou mais campos com informações inválidas"
+          },
+          "500":{
+            "description":"Erro interno no servidor"
+          },
+          "201":{
+            "description":"OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Produto"
+                }
+              }
+            }
+          }
+
+        }
+      }
+    },
+    "/deletarProduto/{id}":{
+      "delete":{
+        "summary": "Deletar um produto existente no MongoDB",
+        "description": "Rota para deletar um produto",
+        "tags": ["Produto"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do produto",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Produto não encontrado"
+          },
+          "500": {
+            "description": "Erro interno no servidor"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Produto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID do produto"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome do produto"
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição do produto"
+          },
+          "cor": {
+            "type": "string",
+            "description": "Cor do produto"
+          },
+          "peso": {
+            "type": "number",
+            "description": "Peso do produto"
+          },
+          "tipo": {
+            "type": "string",
+            "description": "Tipo do produto"
+          },
+          "preco": {
+            "type": "number",
+            "description": "Preço do produto"
+          },
+          "data_cadastro": {
+            "type": "date",
+            "description": "Data de cadastro do produto"
+          }
+        }
+      }
+    }
+  }
+}
